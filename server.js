@@ -27,36 +27,47 @@ function getAction (){
         {
             type: 'list',
             message: 'What would you like to do?',
-            choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role'],
+            choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role', 'Exit'],
             default: 'View All Departments',
             name: 'action'
         }
     ])
     .then((response) => {
-        // test
-        console.log(response.action + 'hello?');
-
         switch(response.action) {
             case 'View All Departments':
                 // display table for all depts
+                // restart getAction
                 break; 
             case 'View All Roles':
                 // display table for roles with dept included
+                // restart getAction
                 break;
             case 'View All Employees':
                 // display table for employees with role and manager incl
+                // restart getAction
                 break;
             case 'Add a Department':
                 // Prompt for name of dept then save
+                // log "Added --- to the database"
+                // restart getAction
                 break;
             case 'Add a Role':
+                // Prompt for name of role, salary, and choose dept
+                // log "Added --- to the database"
+                // restart getAction
                 break;
             case 'Add an Employee':
+                // prompt for fname, lname, choose role, choose manager (option for none)
+                // log "Added --- to the database"
+                // restart getAction
                 break;
             case 'Update an Employee Role':
+                // select employee, select role
+                // log "Updated employee's role"
+                // restart getAction
                 break;
             default:
-                console.log('Something went wrong. Try running the prompt again!');
+                // exit prompt
         }
     });
 }
