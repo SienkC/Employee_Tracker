@@ -35,7 +35,6 @@ const db = mysql.createConnection(
 getAction();
 
 
-
 // prompt for action
 function getAction (){
     inquirer
@@ -53,7 +52,13 @@ function getAction (){
         switch(response.action) {
             case 'View All Departments':
                 // display table for all depts
-                // restart getAction
+                db.query('SELECT * FROM department', function (err, results) {
+                    console.log("\n");
+                    console.table(results);
+                    console.log("");
+                    // restart getAction
+                    getAction();
+                });
                 break; 
             case 'View All Roles':
                 // display table for roles with dept included
@@ -85,6 +90,7 @@ function getAction (){
                 break;
             default:
                 // exit prompt
+                process.exit(0);
         }
     });
 }
