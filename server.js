@@ -38,13 +38,16 @@ function getAction (){
 
         switch(response.action) {
             case 'View All Departments':
-                // 
+                // display table for all depts
                 break; 
             case 'View All Roles':
+                // display table for roles with dept included
                 break;
             case 'View All Employees':
+                // display table for employees with role and manager incl
                 break;
             case 'Add a Department':
+                // Prompt for name of dept then save
                 break;
             case 'Add a Role':
                 break;
