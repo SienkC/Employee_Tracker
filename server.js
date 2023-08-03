@@ -109,9 +109,10 @@ function getAction (){
                     }
                 ])
                 .then((response) => {
-                
                     if(response.depName == "") {
+                        console.log("");
                         console.error("Can not add empty Department name.");
+                        console.log("");
                         // restart getAction
                         getAction();
                     }
@@ -127,12 +128,66 @@ function getAction (){
                             getAction();
                         });
                     }
-                    });
+                });
                 break;
             case 'Add a Role':
                 // Prompt for name of role, salary, and choose dept
                 // log "Added --- to the database"
-                // restart getAction
+
+                // get all dept names and ids
+                db.query('SELECT * FROM department', function (err, results) {
+                    console.log(results[0].name);
+                    const names = [];
+                    const ids = [];
+                    for(let i = 0; i < results.length; i++) {
+                        names.push(results[i].name);
+                        ids.push(results[i].id);
+                    }
+
+                    inquirer
+                    .prompt([
+                        {
+                            type: 'input',
+                            message: 'What is the Role name?',
+                            name: 'rName'
+                        },
+                        {
+                            type: 'input',
+                            message: 'What is the Salary for this role?',
+                            name: 'rSal'
+                        },
+                        {
+                            type: 'list',
+                            message: 'Choose the Department this Role falls under',
+                            choices: names,
+                            name: 'dept'
+                        }
+                    ])
+                    .then((response) => {
+                        // get the index for the department name
+                        let index = names.indexOf(response.dept);
+
+                        if(response.rName == "") {
+                            console.log("");
+                            console.error("Can not add empty Role name.");
+                            console.log("");
+                            // restart getAction
+                            getAction();
+                        }
+                        else {
+                            db.query(`INSERT INTO role (title, salary, department_id)
+                            VALUES ("${response.rName}", "${response.rSal}", "${ids[index]}");`, function (err, results) {
+                                console.log("");
+                                // let user know it was added
+                                console.table(`Added ${response.rName} to the database`);
+                                console.log("");
+                                
+                                // restart getAction
+                                getAction();
+                            });
+                        }
+                    });
+                });
                 break;
             case 'Add an Employee':
                 // prompt for fname, lname, choose role, choose manager (option for none)
