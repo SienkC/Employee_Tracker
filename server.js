@@ -62,7 +62,7 @@ function getAction (){
                 break; 
             case 'View All Roles':
                 // display table for roles with dept included
-                db.query(`SELECT role.id, role.title, department.name as department, role.salary
+                db.query(`SELECT role.id, role.title, department.name AS department, role.salary
                 FROM role
                 JOIN department
                 ON role.department_id = department.id 
@@ -76,12 +76,58 @@ function getAction (){
                 break;
             case 'View All Employees':
                 // display table for employees with role and manager incl
-                // restart getAction
+                db.query(`SELECT T1.id, T1.first_name ,T1.last_name  , T1.title , T2.department, T1.salary,  T1.manager
+                FROM (SELECT E1.id, E1.role_id ,E1.first_name ,E1.last_name  , role.title , role.salary, CONCAT(E2.first_name, ' ', E2.last_name) AS manager
+	                FROM employee E1
+	                left JOIN role
+	                ON E1.role_id = role.id
+	                left JOIN employee E2
+	                ON E1.manager_id = E2.id
+	                ORDER BY E1.id) T1
+                
+                left JOIN (SELECT  role.id ,role.title , department.name AS department
+	                FROM role
+	                inner JOIN department
+	                ON role.department_id = department.id) T2
+                ON T1.role_id = T2.id
+                ORDER BY T1.id`, function (err, results) {
+                    console.log("\n");
+                    console.table(results);
+                    console.log("");
+                    // restart getAction
+                    getAction();
+                });
                 break;
             case 'Add a Department':
                 // Prompt for name of dept then save
-                // log "Added --- to the database"
-                // restart getAction
+                inquirer
+                .prompt([
+                    {
+                        type: 'input',
+                        message: 'What is the Department name?',
+                        name: 'depName'
+                    }
+                ])
+                .then((response) => {
+                
+                    if(response.depName == "") {
+                        console.error("Can not add empty Department name.");
+                        // restart getAction
+                        getAction();
+                    }
+                    else {
+                        db.query(`INSERT INTO department (name)
+                        VALUES ("${response.depName}");`, function (err, results) {
+                            console.log("");
+                            // let user know it was added
+                            console.table(`Added ${response.depName} to the database`);
+                            console.log("");
+                            
+                            // restart getAction
+                            getAction();
+                        });
+                    }
+                    });
                 break;
             case 'Add a Role':
                 // Prompt for name of role, salary, and choose dept
