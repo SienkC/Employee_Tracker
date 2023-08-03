@@ -62,7 +62,17 @@ function getAction (){
                 break; 
             case 'View All Roles':
                 // display table for roles with dept included
-                // restart getAction
+                db.query(`SELECT role.id, role.title, department.name as department, role.salary
+                FROM role
+                JOIN department
+                ON role.department_id = department.id 
+                ORDER BY role.id`, function (err, results) {
+                    console.log("\n");
+                    console.table(results);
+                    console.log("");
+                    // restart getAction
+                    getAction();
+                });
                 break;
             case 'View All Employees':
                 // display table for employees with role and manager incl
