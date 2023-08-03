@@ -36,6 +36,24 @@ function getAction (){
         // test
         console.log(response.action + 'hello?');
 
+        switch(response.action) {
+            case 'View All Departments':
+                break; 
+            case 'View All Roles':
+                break;
+            case 'View All Employees':
+                break;
+            case 'Add a Department':
+                break;
+            case 'Add a Role':
+                break;
+            case 'Add an Employee':
+                break;
+            case 'Update an Employee Role':
+                break;
+            default:
+                console.log('Something went wrong. Try running the prompt again!');
+        }
     });
 }
 
