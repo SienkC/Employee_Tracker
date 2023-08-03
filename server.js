@@ -19,6 +19,23 @@ const mysql = require('mysql2');
 // WHEN I choose to update an employee role
 // THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
 
+
+// Connect to employees database
+const db = mysql.createConnection(
+    {
+        host: 'localhost',
+        user: 'root',
+        password: 'rootroot',
+        database: 'employees_db'
+    },
+    console.log(`Connected to the employees_db database.`)
+);
+
+// Start prompt
+getAction();
+
+
+
 // prompt for action
 function getAction (){
     inquirer
@@ -72,4 +89,4 @@ function getAction (){
     });
 }
 
-getAction();
+
