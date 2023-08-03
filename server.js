@@ -38,6 +38,7 @@ function getAction (){
 
         switch(response.action) {
             case 'View All Departments':
+                // 
                 break; 
             case 'View All Roles':
                 break;
