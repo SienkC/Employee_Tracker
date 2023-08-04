@@ -131,19 +131,15 @@ function getAction (){
                 });
                 break;
             case 'Add a Role':
-                // Prompt for name of role, salary, and choose dept
-                // log "Added --- to the database"
-
                 // get all dept names and ids
                 db.query('SELECT * FROM department', function (err, results) {
-                    console.log(results[0].name);
                     const names = [];
                     const ids = [];
                     for(let i = 0; i < results.length; i++) {
                         names.push(results[i].name);
                         ids.push(results[i].id);
                     }
-
+                    // Prompt for name of role, salary, and choose dept
                     inquirer
                     .prompt([
                         {
@@ -164,7 +160,7 @@ function getAction (){
                         }
                     ])
                     .then((response) => {
-                        // get the index for the department name
+                        // get the index for the chosen department name
                         let index = names.indexOf(response.dept);
 
                         if(response.rName == "") {
@@ -190,7 +186,76 @@ function getAction (){
                 });
                 break;
             case 'Add an Employee':
-                // prompt for fname, lname, choose role, choose manager (option for none)
+                // get all roles and their ids
+                db.query('SELECT * FROM role', function (err, results) {
+                    const roles = [];
+                    const roleIds = [];
+                    for(let i = 0; i < results.length; i++) {
+                        roles.push(results[i].title);
+                        roleIds.push(results[i].id);
+                    }
+                    // get possible managers
+                    db.query('SELECT * FROM employee', function (err, results) {
+                        const mngrs = ["None"];
+                        const manIds = [null];
+                        for(let i = 0; i < results.length; i++) {
+                            mngrs.push(results[i].first_name.concat(" ", results[i].last_name));
+                            manIds.push(results[i].id);
+                        }
+
+                        // prompt for fname, lname, choose role, choose manager (option for none)
+                        inquirer
+                        .prompt([
+                            {
+                                type: 'input',
+                                message: 'What is their First Name?',
+                                name: 'fName'
+                            },
+                            {
+                                type: 'input',
+                                message: 'What is their Last Name?',
+                                name: 'lName'
+                            },
+                            {
+                                type: 'list',
+                                message: 'Choose their Role',
+                                choices: roles,
+                                name: 'role'
+                            },
+                            {
+                                type: 'list',
+                                message: 'Choose their Manager',
+                                choices: mngrs,
+                                name: 'mngr'
+                            }
+                        ])
+                        .then((response) => {
+                            // get the index for the role and manager
+                            let roleIndex = roles.indexOf(response.role);
+                            let manIndex = mngrs.indexOf(response.mngr);
+
+                            if(response.fName == "" || response.lName == "") {
+                                console.log("");
+                                console.error("Can not add empty First Name or Last Name.");
+                                console.log("");
+                                // restart getAction
+                                getAction();
+                            }
+                            else {
+                                db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                                VALUES ("${response.fName}", "${response.lName}", "${roleIds[roleIndex]}", ${manIds[manIndex]});`, function (err, results) {
+                                    console.log("");
+                                    // let user know it was added
+                                    console.table(`Added ${response.fName} ${response.lName} to the database`);
+                                    console.log("");
+                                    
+                                    // restart getAction
+                                    getAction();
+                                });
+                            }
+                        });
+                    });
+                });
                 // log "Added --- to the database"
                 // restart getAction
                 break;
