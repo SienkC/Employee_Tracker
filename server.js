@@ -256,13 +256,61 @@ function getAction (){
                         });
                     });
                 });
-                // log "Added --- to the database"
-                // restart getAction
                 break;
             case 'Update an Employee Role':
-                // select employee, select role
-                // log "Updated employee's role"
-                // restart getAction
+                // get all roles and their ids
+                db.query('SELECT * FROM role', function (err, results) {
+                    const roles = [];
+                    const roleIds = [];
+                    for(let i = 0; i < results.length; i++) {
+                        roles.push(results[i].title);
+                        roleIds.push(results[i].id);
+                    }
+                    // get all employees
+                    db.query('SELECT * FROM employee', function (err, results) {
+                        const emps = ["None"];
+                        const empIds = [null];
+                        for(let i = 0; i < results.length; i++) {
+                            emps.push(results[i].first_name.concat(" ", results[i].last_name));
+                            empIds.push(results[i].id);
+                        }
+
+                        // prompt for fname, lname, choose role, choose manager (option for none)
+                        inquirer
+                        .prompt([
+                            {
+                                type: 'list',
+                                message: 'Select Employee',
+                                choices: emps,
+                                name: 'emp'
+                            },
+                            {
+                                type: 'list',
+                                message: 'Choose their new Role',
+                                choices: roles,
+                                name: 'role'
+                            }
+                        ])
+                        .then((response) => {
+                            // get the index for the role and manager
+                            let roleIndex = roles.indexOf(response.role);
+                            let empIndex = emps.indexOf(response.emp);
+
+                            db.query(`UPDATE employee
+                            SET role_id = '${roleIds[roleIndex]}'
+                            WHERE id = ${empIds[empIndex]};`, function (err, results) {
+                                console.log("");
+                                // let user know it was added
+                                console.table(`Updated employee's role`);
+                                console.log("");
+                                
+                                // restart getAction
+                                getAction();
+                            });
+                            
+                        });
+                    });
+                });
                 break;
             default:
                 // exit prompt
