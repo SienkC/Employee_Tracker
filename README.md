@@ -27,7 +27,8 @@ Command-line application to manage a company's employee database
 
   To use the Employee Tracker, type "node server.js" in the terminal to bring up questions. Choose an action, then answer any questions that appear. The result will either show a table displaying the requested information, or update the database to add new information.
 
-  
+  [Employee_Tracker_example.webm](https://github.com/SienkC/Employee_Tracker/assets/133715604/c0174463-70cf-45da-93b7-2b464eaa020c)
+
 
 
   ## Credits <a id="credits"></a>
